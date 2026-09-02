@@ -1,5 +1,5 @@
-let W = window.innerWidth;
-let H = window.innerHeight;
+let W;
+let H;
 const DELAY = 60;
 const DENOM = 1.3;
 
@@ -25,22 +25,8 @@ function validLine(l, lines) {
   return true;
 }
 
+// ccw&overlaps adapted from 
 // https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
-/*
-def ccw(A, B, C):
-    """
-    Determine if three points are listed in a counterclockwise order.
-
-    If the slope of the line AB is less than the slope of the
-    line AC, then the three points are listed in a counterclockwise order.
-    """
-    return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
-
-def intersect(A, B, C, D):
-    """Return true if line segments AB and CD intersect."""
-    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
-*/
-
 function ccw(a, b, c) {
   return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); 
 }
@@ -49,91 +35,80 @@ function overlaps([a, b], [c, d]) {
 }
 
 const startP5 = (p) => {
-    p.setup = function() {
+  p.setup = function() {
     let parent = document.getElementById("canvasHolder");
     W = parent.offsetWidth;
     H = parent.offsetHeight;
-  let canv = p.createCanvas(W, H);
-  canv.parent("canvasHolder");
+    let canv = p.createCanvas(W, H);
+    canv.parent("canvasHolder");
 
-  textBox = document.getElementById("text");
+    textBox = document.getElementById("text");
+    p.background(0);
+    lines =[];
 
-  p.background(0);
-  lines =[];
+    LINE_COUNT = 1000;
+    BASE_LINE_LENGTH = 10;
+    SCALE_DOWN = 1;
+    TRIES = 1;
+    RANGE = p.PI/6;
+    
+    angles = [0];
+    let fails = 1;
 
-  LINE_COUNT = 1000;
-  BASE_LINE_LENGTH = 10;
-  SCALE_DOWN = 1;
-  TRIES = 1;
-  RANGE = p.PI/6;
-  
-  angles = [0];
-  let fails = 1;
-
-  // model = {
-  //   line: [[x, y], [x, y]],
-  //   hits: h
-  // }
+    // model = {
+    //   line: [[x, y], [x, y]],
+    //   hits: h
+    // }
 
     function* genlines() {
-  
-  while(true) {
-    let lastPoint = null;
-    let hits = 0;
-    while(lastPoint == null) {
-      if(lines.length > 0) {
-        lastLine = lines[lines.length -1];
-        lastLine.hits++;
-        if(lastLine.hits > maxHits) {
-          lines.pop();
-          continue;
+      while(true) {
+        let lastPoint = null;
+        while(lastPoint == null) {
+          if(lines.length > 0) {
+            lastLine = lines[lines.length -1];
+            lastLine.hits++;
+            if(lastLine.hits > maxHits) {
+              lines.pop();
+              continue;
+            }
+            lastPoint = lastLine.line[1];
+            
+          } else {
+            lastPoint = [W/2, H/2];
+          }
         }
-        lastPoint = lastLine.line[1];
-        
-      } else {
-        lastPoint = [W/2, H/2];
-      }
-      
-    }
 
-    let found = false;
-    let lineLength = BASE_LINE_LENGTH;
-
-
-
-      found = false;
-    for(let t = 0; t < TRIES; t++) {
-      let angle = angles[angles.length - 1] + p.random(-RANGE*(fails+1), RANGE*(fails+1));
-      let trialPoint = [lastPoint[0] + p.cos(angle)*lineLength, lastPoint[1] + p.sin(angle)*lineLength];
-      let trialLine = [lastPoint, trialPoint];
-
-      
-      if(!validLine(trialLine, lines)) {
-        lineLength *= SCALE_DOWN;
-        continue;
-      }
-      lines.push({
-        line: trialLine,
-        hits: 0
-      });
-      angles.push(angle);
-      found=true;
-      fails--;
-      if(fails < 0) fails = 0;
-      break;
-    }
-    if(!found) {
-      fails++;
-      for(let f = 0; f < fails; f++) {
-        lines.pop(); angles.pop();
+        let found = false;
+        let lineLength = BASE_LINE_LENGTH;
+        for(let t = 0; t < TRIES; t++) {
+          let angle = angles[angles.length - 1] + p.random(-RANGE*(fails+1), RANGE*(fails+1));
+          let trialPoint = [lastPoint[0] + p.cos(angle)*lineLength, lastPoint[1] + p.sin(angle)*lineLength];
+          let trialLine = [lastPoint, trialPoint];
+          if(!validLine(trialLine, lines)) {
+            lineLength *= SCALE_DOWN;
+            continue;
+          }
+          lines.push({
+            line: trialLine,
+            hits: 0
+          });
+          angles.push(angle);
+          found=true;
+          fails--;
+          if(fails < 0) fails = 0;
+          break;
+        }
+        if(!found) {
+          fails++;
+          for(let f = 0; f < fails; f++) {
+            lines.pop(); angles.pop();
+          }
+        }
+        yield;
       }
     }
-      yield;
-    }
-      
-    }
 
-  gen = genlines();
+    gen = genlines();
 
 }
 
