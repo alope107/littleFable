@@ -23,32 +23,54 @@
   <script>
     const W = 600;
 const H = 400;
-const DELAY = 5;
+const DELAY = 10;
 
 let gen;
 let lines;
 let target = 0;
+let maxHits = 2;
 
 function setup() {
   createCanvas(W, H);
 
     background(0);
-  lines =[[[30, 30], [40, 40]]];
+  lines =[];
 
   LINE_COUNT = 1000;
   BASE_LINE_LENGTH = 4;
   SCALE_DOWN = 1;
   TRIES = 1;
-  RANGE = PI/3;
+  RANGE = PI/6;
   
   angles = [0];
   let fails = 1;
 
+  // model = {
+  //   line: [[x, y], [x, y]],
+  //   hits: h
+  // }
+
     function* genlines() {
-      console.log("hey");
   
-  while(lines.length < LINE_COUNT) {
-    let lastPoint = lines[lines.length -1][1];
+  while(true) {
+    let lastPoint = null;
+    let hits = 0;
+    while(lastPoint == null) {
+      if(lines.length > 0) {
+        lastLine = lines[lines.length -1];
+        lastLine.hits++;
+        if(lastLine.hits > maxHits) {
+          lines.pop();
+          continue;
+        }
+        lastPoint = lastLine.line[1];
+        
+      } else {
+        lastPoint = [W/2, H/2];
+      }
+      
+    }
+
     let found = false;
     let lineLength = BASE_LINE_LENGTH;
 
@@ -65,7 +87,10 @@ function setup() {
         lineLength *= SCALE_DOWN;
         continue;
       }
-      lines.push(trialLine);
+      lines.push({
+        line: trialLine,
+        hits: 0
+      });
       angles.push(angle);
       found=true;
       fails--;
@@ -94,7 +119,8 @@ function draw() {
   stroke(color(255, 255, 255));
   gen.next();
 
-  for(const l of lines) {
+  for(const obj of lines) {
+    l = obj.line;
     line(l[0][0], l[0][1], l[1][0], l[1][1]);
   }
 }
@@ -106,7 +132,7 @@ function validLine(l, lines) {
     return false;
   }
   for(let i = 0; i < lines.length - 1; i++) {
-    if(overlaps(l, lines[i])) return false;
+    if(overlaps(l, lines[i].line)) return false;
   }
   return true;
 }
