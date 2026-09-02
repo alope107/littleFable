@@ -1,7 +1,7 @@
 let W;
 let H;
 const DELAY = 60;
-const DENOM = 1.3;
+const DENOM = 1;
 
 let gen;
 let lines;
@@ -47,7 +47,7 @@ const startP5 = (p) => {
     lines =[];
 
     LINE_COUNT = 1000;
-    BASE_LINE_LENGTH = 10;
+    BASE_LINE_LENGTH = 6;
     SCALE_DOWN = 1;
     TRIES = 1;
     RANGE = p.PI/6;
