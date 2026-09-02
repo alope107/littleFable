@@ -1,0 +1,138 @@
+const W = window.innerWidth;
+const H = window.innerHeight;
+const DELAY = 10;
+
+let gen;
+let lines;
+let target = 0;
+let maxHits = 2;
+
+function setup() {
+  createCanvas(W, H);
+
+    background(0);
+  lines =[];
+
+  LINE_COUNT = 1000;
+  BASE_LINE_LENGTH = 4;
+  SCALE_DOWN = 1;
+  TRIES = 1;
+  RANGE = PI/6;
+  
+  angles = [0];
+  let fails = 1;
+
+  // model = {
+  //   line: [[x, y], [x, y]],
+  //   hits: h
+  // }
+
+    function* genlines() {
+  
+  while(true) {
+    let lastPoint = null;
+    let hits = 0;
+    while(lastPoint == null) {
+      if(lines.length > 0) {
+        lastLine = lines[lines.length -1];
+        lastLine.hits++;
+        if(lastLine.hits > maxHits) {
+          lines.pop();
+          continue;
+        }
+        lastPoint = lastLine.line[1];
+        
+      } else {
+        lastPoint = [W/2, H/2];
+      }
+      
+    }
+
+    let found = false;
+    let lineLength = BASE_LINE_LENGTH;
+
+
+
+      found = false;
+    for(let t = 0; t < TRIES; t++) {
+      let angle = angles[angles.length - 1] + random(-RANGE*(fails+1), RANGE*(fails+1));
+      let trialPoint = [lastPoint[0] + cos(angle)*lineLength, lastPoint[1] + sin(angle)*lineLength];
+      let trialLine = [lastPoint, trialPoint];
+
+      
+      if(!validLine(trialLine, lines)) {
+        lineLength *= SCALE_DOWN;
+        continue;
+      }
+      lines.push({
+        line: trialLine,
+        hits: 0
+      });
+      angles.push(angle);
+      found=true;
+      fails--;
+      if(fails < 0) fails = 0;
+      break;
+    }
+    if(!found) {
+      fails++;
+      for(let f = 0; f < fails; f++) {
+        lines.pop(); angles.pop();
+      }
+    }
+      yield;
+    }
+      
+    }
+
+  gen = genlines();
+
+}
+
+function draw() {
+  if(millis() < target) return;
+  target = millis() + DELAY;
+  background(color(0,0,0));
+  stroke(color(255, 255, 255));
+  gen.next();
+
+  for(const obj of lines) {
+    l = obj.line;
+    line(l[0][0], l[0][1], l[1][0], l[1][1]);
+  }
+}
+
+function validLine(l, lines) {
+  const endpoint = l[1];
+  if( !(endpoint[0] >= 0 && endpoint[0] < W &&
+         endpoint[1] >= 0 && endpoint[1] < H)) {
+    return false;
+  }
+  for(let i = 0; i < lines.length - 1; i++) {
+    if(overlaps(l, lines[i].line)) return false;
+  }
+  return true;
+}
+
+// https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
+/*
+def ccw(A, B, C):
+    """
+    Determine if three points are listed in a counterclockwise order.
+
+    If the slope of the line AB is less than the slope of the
+    line AC, then the three points are listed in a counterclockwise order.
+    """
+    return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
+
+def intersect(A, B, C, D):
+    """Return true if line segments AB and CD intersect."""
+    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
+*/
+
+function ccw(a, b, c) {
+  return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); 
+}
+function overlaps([a, b], [c, d]) {
+  return ccw(a, c, d) != ccw(b, c, d) && ccw(a, b, c) != ccw(a, b, d);
+}
