@@ -56,7 +56,7 @@ function setup() {
 
       found = false;
     for(let t = 0; t < TRIES; t++) {
-      let angle = angles[angles.length - 1] + random(-RANGE, RANGE);
+      let angle = angles[angles.length - 1] + random(-RANGE*(fails+1), RANGE*(fails+1));
       let trialPoint = [lastPoint[0] + cos(angle)*lineLength, lastPoint[1] + sin(angle)*lineLength];
       let trialLine = [lastPoint, trialPoint];
 
@@ -68,15 +68,15 @@ function setup() {
       lines.push(trialLine);
       angles.push(angle);
       found=true;
-      // fails/=2;
-      // if(fails < 2) fails = 2;
+      fails--;
+      if(fails < 0) fails = 0;
       break;
     }
     if(!found) {
-      // fails *= 2;
-      // for(let f = 0; f < fails; f++) {
+      fails++;
+      for(let f = 0; f < fails; f++) {
         lines.pop(); angles.pop();
-      // }
+      }
     }
       yield;
     }
