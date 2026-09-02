@@ -1,16 +1,27 @@
-const W = window.innerWidth;
-const H = window.innerHeight;
+let W = window.innerWidth;
+let H = window.innerHeight;
 const DELAY = 10;
+const DENOM = 1.3;
 
 let gen;
 let lines;
 let target = 0;
 let maxHits = 2;
 
-function setup() {
-  createCanvas(W, H);
+let textBox;
 
-    background(0);
+let fableText = `"Alas", said the mouse, "the whole world is growing smaller every day. At the beginning it was so big that I was afraid, I kept running and running, and I was glad when I saw walls far away to the right and left, but these long walls have narrowed so quickly that I am in the last chamber already, and there in the corner stands the trap that I am running into." "You only need to change your direction," said the cat, and ate it up.`;
+
+function setup() {
+    let parent = document.getElementById("canvasHolder");
+    W = parent.offsetWidth;
+    H = parent.offsetHeight;
+  let canv = createCanvas(W, H);
+  canv.parent("canvasHolder");
+
+  textBox = document.getElementById("text");
+
+  background(0);
   lines =[];
 
   LINE_COUNT = 1000;
@@ -100,6 +111,8 @@ function draw() {
     l = obj.line;
     line(l[0][0], l[0][1], l[1][0], l[1][1]);
   }
+
+  textBox.innerHTML = fableText.substring(0, Math.floor(lines.length/DENOM));
 }
 
 function validLine(l, lines) {
