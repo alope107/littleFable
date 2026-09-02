@@ -1,6 +1,6 @@
 let W = window.innerWidth;
 let H = window.innerHeight;
-const DELAY = 10;
+const DELAY = 60;
 const DENOM = 1.3;
 
 let gen;

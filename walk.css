@@ -6,7 +6,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center; */
-    height: 100vh;
+    height: 100dvh;
 }
 
 #canvasHolder {
@@ -15,8 +15,9 @@ body {
 }
 
 #littleFable {
+    font-size: 2rem;
     color: white;
     height: 50%;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-center;
 }
