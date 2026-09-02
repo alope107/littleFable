@@ -37,11 +37,12 @@ function setup() {
 
   LINE_COUNT = 1000;
   BASE_LINE_LENGTH = 4;
-  SCALE_DOWN = .7;
+  SCALE_DOWN = 1;
   TRIES = 1;
   RANGE = PI/3;
   
   angles = [0];
+  let fails = 1;
 
     function* genlines() {
       console.log("hey");
@@ -67,9 +68,16 @@ function setup() {
       lines.push(trialLine);
       angles.push(angle);
       found=true;
+      // fails/=2;
+      // if(fails < 2) fails = 2;
       break;
     }
-    if(!found) {lines.pop(); angles.pop();}
+    if(!found) {
+      // fails *= 2;
+      // for(let f = 0; f < fails; f++) {
+        lines.pop(); angles.pop();
+      // }
+    }
       yield;
     }
       
