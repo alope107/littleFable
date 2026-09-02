@@ -12,23 +12,60 @@ let textBox;
 
 let fableText = `"Alas", said the mouse, "the whole world is growing smaller every day. At the beginning it was so big that I was afraid, I kept running and running, and I was glad when I saw walls far away to the right and left, but these long walls have narrowed so quickly that I am in the last chamber already, and there in the corner stands the trap that I am running into." "You only need to change your direction," said the cat, and ate it up.`;
 
-function setup() {
+
+function validLine(l, lines) {
+  const endpoint = l[1];
+  if( !(endpoint[0] >= 0 && endpoint[0] < W &&
+         endpoint[1] >= 0 && endpoint[1] < H)) {
+    return false;
+  }
+  for(let i = 0; i < lines.length - 1; i++) {
+    if(overlaps(l, lines[i].line)) return false;
+  }
+  return true;
+}
+
+// https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
+/*
+def ccw(A, B, C):
+    """
+    Determine if three points are listed in a counterclockwise order.
+
+    If the slope of the line AB is less than the slope of the
+    line AC, then the three points are listed in a counterclockwise order.
+    """
+    return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
+
+def intersect(A, B, C, D):
+    """Return true if line segments AB and CD intersect."""
+    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
+*/
+
+function ccw(a, b, c) {
+  return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); 
+}
+function overlaps([a, b], [c, d]) {
+  return ccw(a, c, d) != ccw(b, c, d) && ccw(a, b, c) != ccw(a, b, d);
+}
+
+const startP5 = (p) => {
+    p.setup = function() {
     let parent = document.getElementById("canvasHolder");
     W = parent.offsetWidth;
     H = parent.offsetHeight;
-  let canv = createCanvas(W, H);
+  let canv = p.createCanvas(W, H);
   canv.parent("canvasHolder");
 
   textBox = document.getElementById("text");
 
-  background(0);
+  p.background(0);
   lines =[];
 
   LINE_COUNT = 1000;
-  BASE_LINE_LENGTH = 4;
+  BASE_LINE_LENGTH = 10;
   SCALE_DOWN = 1;
   TRIES = 1;
-  RANGE = PI/6;
+  RANGE = p.PI/6;
   
   angles = [0];
   let fails = 1;
@@ -66,8 +103,8 @@ function setup() {
 
       found = false;
     for(let t = 0; t < TRIES; t++) {
-      let angle = angles[angles.length - 1] + random(-RANGE*(fails+1), RANGE*(fails+1));
-      let trialPoint = [lastPoint[0] + cos(angle)*lineLength, lastPoint[1] + sin(angle)*lineLength];
+      let angle = angles[angles.length - 1] + p.random(-RANGE*(fails+1), RANGE*(fails+1));
+      let trialPoint = [lastPoint[0] + p.cos(angle)*lineLength, lastPoint[1] + p.sin(angle)*lineLength];
       let trialLine = [lastPoint, trialPoint];
 
       
@@ -100,52 +137,21 @@ function setup() {
 
 }
 
-function draw() {
-  if(millis() < target) return;
-  target = millis() + DELAY;
-  background(color(0,0,0));
-  stroke(color(255, 255, 255));
+p.draw = function() {
+  if(p.millis() < target) return;
+  target = p.millis() + DELAY;
+  p.background(p.color(0,0,0));
+  p.stroke(p.color(255, 255, 255));
   gen.next();
 
   for(const obj of lines) {
     l = obj.line;
-    line(l[0][0], l[0][1], l[1][0], l[1][1]);
+    p.line(l[0][0], l[0][1], l[1][0], l[1][1]);
   }
 
   textBox.innerHTML = fableText.substring(0, Math.floor(lines.length/DENOM));
 }
-
-function validLine(l, lines) {
-  const endpoint = l[1];
-  if( !(endpoint[0] >= 0 && endpoint[0] < W &&
-         endpoint[1] >= 0 && endpoint[1] < H)) {
-    return false;
-  }
-  for(let i = 0; i < lines.length - 1; i++) {
-    if(overlaps(l, lines[i].line)) return false;
-  }
-  return true;
 }
 
-// https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
-/*
-def ccw(A, B, C):
-    """
-    Determine if three points are listed in a counterclockwise order.
 
-    If the slope of the line AB is less than the slope of the
-    line AC, then the three points are listed in a counterclockwise order.
-    """
-    return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
-
-def intersect(A, B, C, D):
-    """Return true if line segments AB and CD intersect."""
-    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
-*/
-
-function ccw(a, b, c) {
-  return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); 
-}
-function overlaps([a, b], [c, d]) {
-  return ccw(a, c, d) != ccw(b, c, d) && ccw(a, b, c) != ccw(a, b, d);
-}
+new p5(startP5, document.getElementById("canvasHolder"));

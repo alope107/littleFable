@@ -2,22 +2,39 @@ body {
     margin: 0;
     padding: 0;
     background: #111;
-    /* overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center; */
+    color: white;
     height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #canvasHolder {
     background-color: green;
-    height: 50%;
+    height: 40%;
+    width: 100%
 }
 
 #littleFable {
-    font-size: 2rem;
-    color: white;
-    height: 50%;
+    font-size: 1.3rem;
+    /* text-fit: grow; */
+    height: 30%;
     display: flex;
     align-items: flex-center;
+    padding: 1rem;
+}
+
+header {
+    text-align: center;
+}
+
+main {  /* Hack - should actually figure out how to prevent p5 from making its own main*/
+    display: none;
+}
+
+#realMain {
+    max-width: 600px;
+    height: 100%;
+    flex-grow: 1;
+    display: block;
 }
