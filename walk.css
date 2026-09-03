@@ -22,6 +22,8 @@ body {
     display: flex;
     align-items: flex-center;
     padding: 1rem;
+    height: auto;
+    flex-grow: 1;
 }
 
 header {
@@ -37,7 +39,8 @@ main {  /* Hack - should actually figure out how to prevent p5 from making its o
     max-width: 600px;
     height: 100%;
     flex-grow: 1;
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
