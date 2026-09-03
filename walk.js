@@ -55,7 +55,7 @@ const startP5 = (p) => {
     TRIES = 1;
     RANGE = p.PI/6;
     
-    angles = [0];
+    angles = [];
     let fails = 1;
 
     // model = {
@@ -78,6 +78,7 @@ const startP5 = (p) => {
             
           } else {
             lastPoint = [W/2, H/2];
+            angles = [p.random(2*p.PI)];
           }
         }
 
@@ -133,6 +134,12 @@ p.draw = function() {
   inactiveTextSpan.innerText = fableText.substring(currentLen, bestLen);
 }
 }
+
+const restart = () => {
+  lines = [];
+  bestLen = 0;
+  angles=[];
+};
 
 
 new p5(startP5, document.getElementById("canvasHolder"));
