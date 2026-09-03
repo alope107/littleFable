@@ -12,13 +12,13 @@ body {
 #canvasHolder {
     background-color: green;
     height: 40%;
-    width: 100%
+    width: 100%;
+    position: relative;
 }
 
 #littleFable {
     font-size: 1.3rem;
     font-family: "Noto Serif", serif;
-    /* text-fit: grow; */
     height: 30%;
     display: flex;
     align-items: flex-center;
@@ -39,4 +39,15 @@ main {  /* Hack - should actually figure out how to prevent p5 from making its o
     height: 100%;
     flex-grow: 1;
     display: block;
+}
+
+header {
+    position: relative;
+}
+
+#rat { /* Need to position this better - overlaps title on mobile */
+    position: absolute;
+    bottom: -20px;
+    right: 10px;
+    height: 120%;
 }
