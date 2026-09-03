@@ -44,6 +44,8 @@ const startP5 = (p) => {
     let canv = p.createCanvas(W, H);
     canv.parent("canvasHolder");
 
+    resizeCanvas = p.resizeCanvas;
+
     activeTextSpan = document.getElementById("activeText");
     inactiveTextSpan = document.getElementById("inactiveText");
     p.background(0);
@@ -133,13 +135,22 @@ p.draw = function() {
   activeTextSpan.innerText = fableText.substring(0, currentLen);
   inactiveTextSpan.innerText = fableText.substring(currentLen, bestLen);
 }
-}
 
-const restart = () => {
+p.restart = function() {
+  let parent = document.getElementById("canvasHolder");
+  W = parent.offsetWidth;
+  H = parent.offsetHeight;
+  console.log(W, H);
+  p.resizeCanvas(W, H);
   lines = [];
   bestLen = 0;
   angles=[];
-};
+}
+}
 
 
-new p5(startP5, document.getElementById("canvasHolder"));
+
+
+const p = new p5(startP5, document.getElementById("canvasHolder"));
+
+const restart = () => p.restart();
