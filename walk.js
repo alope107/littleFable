@@ -7,8 +7,10 @@ let gen;
 let lines;
 let target = 0;
 let maxHits = 2;
+let bestLen = 0;
 
-let textBox;
+let activeTextSpan;
+let inactiveTextSpan;
 
 let fableText = `"Alas", said the mouse, "the whole world is growing smaller every day. At the beginning it was so big that I was afraid, I kept running and running, and I was glad when I saw walls far away to the right and left, but these long walls have narrowed so quickly that I am in the last chamber already, and there in the corner stands the trap that I am running into." "You only need to change your direction," said the cat, and ate it up.`;
 
@@ -42,7 +44,8 @@ const startP5 = (p) => {
     let canv = p.createCanvas(W, H);
     canv.parent("canvasHolder");
 
-    textBox = document.getElementById("text");
+    activeTextSpan = document.getElementById("activeText");
+    inactiveTextSpan = document.getElementById("inactiveText");
     p.background(0);
     lines =[];
 
@@ -124,7 +127,10 @@ p.draw = function() {
     p.line(l[0][0], l[0][1], l[1][0], l[1][1]);
   }
 
-  textBox.innerHTML = fableText.substring(0, Math.floor(lines.length/DENOM));
+  let currentLen = Math.floor(lines.length/DENOM);
+  bestLen = Math.max(bestLen, currentLen);
+  activeTextSpan.innerText = fableText.substring(0, currentLen);
+  inactiveTextSpan.innerText = fableText.substring(currentLen, bestLen);
 }
 }
 

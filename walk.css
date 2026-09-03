@@ -51,3 +51,11 @@ header {
     right: 10px;
     height: 120%;
 }
+
+#inactiveText {
+    color: #6f6f6f;
+}
+
+span {
+    display: inline;
+}
