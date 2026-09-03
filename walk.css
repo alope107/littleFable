@@ -19,7 +19,6 @@ body {
 #littleFable {
     font-size: 1.3rem;
     font-family: "Noto Serif", serif;
-    height: 30%;
     display: flex;
     align-items: flex-center;
     padding: 1rem;
@@ -43,45 +42,49 @@ main {  /* Hack - should actually figure out how to prevent p5 from making its o
 
 header {
     position: relative;
-    display: flex;
-    height: 20%;
-    justify-content:baseline;
-    align-items: center;
-}
-
-.side {
-    position: relative;
-    flex: 1 1 0; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
-    display: flex;
-    height: 100%;
+    display: grid;
+    /* height: 20%; */
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-auto-rows: 1fr;
+    grid-template-areas: 
+        "t t t"
+        "b a r";
 }
 
 .left {
-    justify-content: flex-start;
+    grid-area: b;
 }
 
 .right {
+    grid-area: r;
+    display: flex;
+    align-items:last baseline;
     justify-content: flex-end;
+
 }
 
-#title {
-    flex: 0 1 auto;
+author {
+    grid-area: a;
+    display: grid;
+    place-items: center;
 }
 
-#rat { /* Need to position this better - overlaps title on mobile */
-    /* position: absolute;
-    bottom: -20px;
-    right: 10px;
-    height: 120%; */
-    height: 40%;
-    /* height: auto; */
-    position: absolute;
-    bottom: 0;
-    right: 0;
+h1 {
+    grid-area: t;
+    margin: 0;
+    display: grid;
+    place-items: center;
 }
 
 #inactiveText {
     color: #6f6f6f;
+}
+
+#rat {
+    height: auto;
+    min-height: 2rem;
+    max-height: 4rem;
 }
 
 span {
