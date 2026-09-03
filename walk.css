@@ -18,7 +18,7 @@ body {
 }
 
 #littleFable {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-family: "Noto Serif", serif;
     display: flex;
     align-items: flex-center;
@@ -109,6 +109,12 @@ button {
     left: 0;
 }
 
-button:hover, button:active {
+button:active {
     background-color: #6f6f6f;
+}
+
+@media (hover: hover) {
+    button:hover {
+        background-color: #6f6f6f;
+    }
 }

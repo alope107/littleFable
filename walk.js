@@ -1,7 +1,7 @@
 let W;
 let H;
 const DELAY = 60;
-const DENOM = 1;
+const DENOM = .9;
 
 let gen;
 let lines;
