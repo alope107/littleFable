@@ -30,6 +30,7 @@ body {
 header {
     font-family: "Noto Serif", serif;
     text-align: center;
+    max-width: 100dvw;
 }
 
 main {  /* Hack - should actually figure out how to prevent p5 from making its own main*/
@@ -39,6 +40,7 @@ main {  /* Hack - should actually figure out how to prevent p5 from making its o
 #realMain {
     max-width: 600px;
     height: 100%;
+    width:100%;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
